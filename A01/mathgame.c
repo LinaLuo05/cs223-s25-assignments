@@ -22,7 +22,8 @@ int main() {
       int num2 = rand()%10;
       int answer = num1 + num2;
 
-      int guess = scanf("What is %d + %d ?", num1, num2);
+      print("What is %d + %d ?", num1, num2);
+      scanf(%d, &guess);
       if (guess == answer) {
         printf("Correct!\n");
         correct++;
@@ -30,7 +31,7 @@ int main() {
         printf("Incorrect:(\n");
       }
     }
-    printf("You answered %d correctly.\n", correct/round);
+    printf("You answered %d correctly.\n", (float)correct/round);
     return 0;
   }
 
