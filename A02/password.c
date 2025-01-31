@@ -4,6 +4,7 @@
  * This program asks the user for a word and creates a bad password from it
  */
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 int main() {
@@ -25,7 +26,7 @@ int main() {
       password[i] = '1';
     }
     else if (password[i] == 'a'){
-      password[i] == '@';
+      password[i] = '@';
     }
   };
 
