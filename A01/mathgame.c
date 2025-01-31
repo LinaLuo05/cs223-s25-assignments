@@ -6,6 +6,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 int main() {
   int round = 0; //variable of how many round does the user want to play
