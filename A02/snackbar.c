@@ -44,7 +44,7 @@ int main() {
   
   //print the snacks
   for (int i = 0; i < 3; i++) {
-    printf("%d ) %s\t cost: $%.2f\t quantity: %d\n", i, snackArray[i].name, snackArray[i].cost, snackArray[i].quantity);
+    printf("%d) %s\t cost: $%.2f\t quantity: %d\n", i, snackArray[i].name, snackArray[i].cost, snackArray[i].quantity);
   }
 
   //ask the user which snack they want to buy
@@ -63,7 +63,7 @@ int main() {
     printf("You bought %s\n", snackArray[choice].name);
     money -= snackArray[choice].cost;
     snackArray[choice].quantity--;
-    printf("You have $%f left\n", money);
+    printf("You have $%.2f left\n", money);
   }
 
   return 0;
