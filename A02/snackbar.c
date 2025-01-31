@@ -20,7 +20,7 @@ int main() {
 
   //ask the user how much money they have
   printf("How much money do you have?");
-  scanf("%f", money);
+  scanf("%f", &money);
 
   //define the snacks
   snack CocoPuffs, ManchegoCheese, MagicBeans;
