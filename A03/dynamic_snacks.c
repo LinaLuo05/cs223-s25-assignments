@@ -17,7 +17,7 @@ int main() {
   printf("Enter a number of snacks:");
   scanf("%d", &numSnacks);
   
-  struct snack* snackArray = malloc(numSnacks);
+  struct snack* snackArray = malloc(numSnacks * sizeof(struct snack));
 
   for (int i = 0; i < numSnacks; i++){
     printf("Enter a name:");
