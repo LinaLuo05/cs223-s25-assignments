@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
+//define a structure to store information about a snack.
 struct snack {
     char name[100];
     float cost;
@@ -13,12 +15,15 @@ struct snack {
   };
 
 int main() {
+  //ask for the number of snacks the user wants to add
   int numSnacks;
   printf("Enter a number of snacks:");
   scanf("%d", &numSnacks);
-  
-  struct snack* snackArray = malloc(numSnacks * sizeof(struct snack));
 
+  //create an array of struct snack
+  struct snack* snackArray = malloc(numSnacks * sizeof(struct snack));
+  
+  //loop to read the details for each snack from the user 
   for (int i = 0; i < numSnacks; i++){
     printf("Enter a name:");
     scanf("%s", snackArray[i].name);
