@@ -23,7 +23,8 @@ int main() {
   int *constantArray = malloc(sizeof(int)*(colomn+row+1));
   int constant = 0;
   int diagonal = 0;
-  int index = 0;
+  int index = 0;//keep track of the index of where to write in constantArray
+
   //stores the sum of diagonal entries into the constantArray;
   for (int i = 0; i<row; i++){
     for(int j = 0; j <colomn; j++){
@@ -34,6 +35,7 @@ int main() {
   }
   constantArray[index] = diagonal;
   index++;
+
   //stores the sums of rows into the constantArrary
   for (int i = 0; i<row; i++){
     for(int j = 0; j <colomn; j++){
