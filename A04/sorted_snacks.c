@@ -16,34 +16,60 @@ struct snack {
 /**
  * create a new snack struct and insert it at the beginning of the list
  */
-void insert_first(char *name, float cost, int quantity, struct snack* head){
+void insert_first(char *name, float cost, int quantity, struct snack** head){
   struct snack* n = malloc(sizeof(struct snack));
   strcpy(n->name, name);
   n->cost = cost;
   n->quantity = quantity;
-  n->next = head;
-  head = n;
+  n->next = *head;
+  *head = n;
+ 
 }
 /**
  * clear and free all items in the list
  */
 void clear(struct snack* head){
-  struct snack* next = NULL;
-  while(next != NULL){
-    next = head->next;
-    free(head);
-    clear(next);
+  struct snack* current = head;
+  while (current != NULL) {
+    struct snack* next = current->next;
+    free(current);
+    current = next;
   }
 }
 /**
  * print the contents of the list
  */
 void printList(struct snack* head){
-  for (struct snack* n = head; n!= NULL; n = n->next){
-    printf("%d) %s\t cost: $%.2f\t quantity: %d\n", i, head->name, head->cost, head->quantity);
+  struct snack* n = head;
+  int i = 0;
+  while (n != NULL){
+    printf("%d) %s\t cost: $%.2f\t quantity: %d\n", i, n->name, n->cost, n->quantity);
     i++;
-    printList(next);
+    n = n->next;
   }
+}
+
+/**
+ * sort by name
+ */
+void sortName(struct snack* head){
+  
+}
+
+
+/**
+ * sort by cost
+ */
+void sortCost(struct snack* head, int numSnacks){
+  
+}
+
+
+/**
+ * sort by quantity
+ */
+void sortQuantity(struct snack* list){
+
 }
 
 int main() {
@@ -69,9 +95,10 @@ int main() {
     printf("Enter a quantity:");
     scanf("%d", &quantity);
 
-    insert_first(name,cost,quantity,head);
+    insert_first(name,cost,quantity,&head);
   }
+  sortCost(head,numSnacks);
   printList(head); 
-
+  clear(head);
   return 0;
 }
