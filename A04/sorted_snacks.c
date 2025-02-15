@@ -59,7 +59,7 @@ void sortName(struct snack** head) {
 
   while (swapped) {
     swapped = 0;
-    ptr = head; // Points to the pointer that may change
+    ptr = head; 
     current = *ptr;
 
     while (current && current->next) {
@@ -68,11 +68,11 @@ void sortName(struct snack** head) {
         struct snack* nextSnack = current->next;
         current->next = nextSnack->next;
         nextSnack->next = current;
-        *ptr = nextSnack; // Update head/previous pointer
+        *ptr = nextSnack; 
         swapped = 1;
-        current = nextSnack; // Move to swapped node
+        current = nextSnack; 
       }
-      ptr = &current->next; // Advance to next pointer location
+      ptr = &current->next; 
       current = current->next;
     }
   }
@@ -159,8 +159,11 @@ int main() {
 
     insert_first(name,cost,quantity,&head);
   }
+  sortCost(&head);
+  sortQuantity(&head);
   sortName(&head);
   printList(head); 
   clear(head);
   return 0;
 }
+
