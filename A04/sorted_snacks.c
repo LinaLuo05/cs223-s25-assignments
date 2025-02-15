@@ -52,25 +52,87 @@ void printList(struct snack* head){
 /**
  * sort by name
  */
-void sortName(struct snack* head){
-  
+void sortName(struct snack** head) {
+  int swapped = 1;
+  struct snack** ptr;
+  struct snack* current;
+
+  while (swapped) {
+    swapped = 0;
+    ptr = head; // Points to the pointer that may change
+    current = *ptr;
+
+    while (current && current->next) {
+      // Compare adjacent nodes
+      if (strcmp(current->name, current->next->name) > 0) {
+        struct snack* nextSnack = current->next;
+        current->next = nextSnack->next;
+        nextSnack->next = current;
+        *ptr = nextSnack; // Update head/previous pointer
+        swapped = 1;
+        current = nextSnack; // Move to swapped node
+      }
+      ptr = &current->next; // Advance to next pointer location
+      current = current->next;
+    }
+  }
 }
-
-
 /**
  * sort by cost
  */
-void sortCost(struct snack* head, int numSnacks){
-  
+void sortCost(struct snack** head) {
+  int swapped = 1;
+  struct snack** ptr;
+  struct snack* current;
+
+  while (swapped) {
+    swapped = 0;
+    ptr = head;
+    current = *ptr;
+
+    while (current && current->next) {
+      if (current->cost > current->next->cost) {
+        struct snack* nextSnack = current->next;
+        current->next = nextSnack->next;
+        nextSnack->next = current;
+        *ptr = nextSnack;
+        swapped = 1;
+        current = nextSnack;
+      }
+      ptr = &current->next;
+      current = current->next;
+    }
+  }
 }
-
-
 /**
  * sort by quantity
  */
-void sortQuantity(struct snack* list){
+void sortQuantity(struct snack** head) {
+  int swapped = 1;
+  struct snack** ptr;
+  struct snack* current;
 
+  while (swapped) {
+    swapped = 0;
+    ptr = head;
+    current = *ptr;
+
+    while (current && current->next) {
+      if (current->quantity > current->next->quantity) {
+        struct snack* nextSnack = current->next;
+        current->next = nextSnack->next;
+        nextSnack->next = current;
+        *ptr = nextSnack;
+        swapped = 1;
+        current = nextSnack;
+      }
+      ptr = &current->next;
+      current = current->next;
+    }
+  }
 }
+
+
 
 int main() {
   //ask for the number of snacks the user wants to add
@@ -97,7 +159,7 @@ int main() {
 
     insert_first(name,cost,quantity,&head);
   }
-  sortCost(head,numSnacks);
+  sortName(&head);
   printList(head); 
   clear(head);
   return 0;
