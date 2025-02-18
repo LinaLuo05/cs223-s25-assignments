@@ -30,34 +30,6 @@ void clear(struct letter* head){
     current = next;
   }
 }
-/**
-void removeL(struct letter** head, char r){
-  struct letter* curr = *head;
-  while (*curr->l == r){
-    head = *curr->next;
-  }
-  while (*curr != NULL){
-    if(*curr->l == r){
-      *curr->next = *curr->next->next;
-      free(*curr->next);
-    }
-    *curr = *curr->next;
-  }
-}
- 
-void removeL(struct letter* head, char r){
-  if (head){
-    if (head->l == r) {
-      struct letter* next = head->next;
-      head->l = next->l;
-      head->next = next->next;
-      free(next);
-    }
-    else{
-      removeL(head->next, r);
-    }
-  }
-}*/
 
 void removeL(struct letter* head, char r){
   if (head->l == r) {
