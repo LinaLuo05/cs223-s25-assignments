@@ -44,6 +44,12 @@ void txt_reversed(char* name){
     fclose(outfile);
 }
 
+/**
+ * Write a program that swaps the first and last element of a linked list.
+ */
+
+ 
+
 int main(void) {
     char name[100];
     printf("Please enter input file name: ");
