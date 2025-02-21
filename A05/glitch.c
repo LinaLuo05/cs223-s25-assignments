@@ -26,7 +26,7 @@ struct ppm_pixel* glitch(struct ppm_pixel* image, int w, int h) {
 
 int main(int argc, char *argv[]){
   if (argc != 2) {
-    printf("Usage: %s <PPM filename>\n", argv[0]);
+    printf("Wrong argument formate\n");
     return 1;
   }
   char* filename = argv[1]; 
