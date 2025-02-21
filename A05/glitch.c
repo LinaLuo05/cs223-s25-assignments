@@ -20,7 +20,6 @@ struct ppm_pixel* glitch(struct ppm_pixel* image, int w, int h) {
     }
   }
   return glitched_image;
-  free(glitched_image);
 }
 
 
