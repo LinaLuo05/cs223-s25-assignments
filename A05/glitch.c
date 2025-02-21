@@ -38,9 +38,16 @@ int main(int argc, char *argv[]){
   //calling the function to write glitched outfile 
   struct ppm_pixel* glitched_pixels = glitch(pixels, w, h);
 
+  //creating the outfile name with suffix "-glitch.ppm"
   char outfileName[256];
-  snprintf(outfileName, sizeof(outfileName), "%.*s-glitch.ppm", (int)(strlen(filename) - 4), filename);
+  int i;
+  for (i = 0; i < strlen(filename) - 4; i++) {
+      outfileName[i] = filename[i];
+  }
+  outfileName[i] = '\0';
+  strcat(outfileName, "-glitch.ppm");
 
+  //write the glitched image into binary file
   write_ppm(outfileName,glitched_pixels,w,h);
   printf("Writing file %s\n", outfileName);
 
