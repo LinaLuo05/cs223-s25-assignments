@@ -28,6 +28,7 @@ int main(int argc, char *argv[]){
     printf("Wrong argument formate\n");
     return 1;
   }
+  
   char* filename = argv[1]; 
   int w, h;
   //reading in the file
