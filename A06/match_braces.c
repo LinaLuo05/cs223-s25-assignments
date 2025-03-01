@@ -16,7 +16,7 @@ struct node{
   struct node* next;
 };
 
-void push(char c, int line, int column, struct node** head){
+void push(int line, int colomn, struct node** head){
   struct node* n = malloc(sizeof(struct node));
   n->c = c;
   n->line = line;
@@ -25,12 +25,10 @@ void push(char c, int line, int column, struct node** head){
   *head = n;
 }
 
-struct node* pop(struct node** head) {
-  if (*head == NULL)
-      return NULL;
-  struct node* top = *head;
-  *head = top->next;
-  return top;
+struct node pop(struct node* head){
+  struct node target = *head;
+  head = target->next;
+  return target;
 }
 
 void printList(struct node* head){
@@ -56,12 +54,13 @@ void clear(struct node** head) {
 
 int main(int argc, char** argv)
 {
+  //Print the usage if the user inputs an incorrect number of command line arguments
   if (argc != 2) {
-    fprintf(stderr, "Usage: %s filename\n", argv[0]);
+    fprintf(stderr, "Usage: %s\n", argv[0]);
     return 1;
   }
 
-  FILE* infile = fopen(argv[1], "r");
+  FILE* infile = fopen(filename, "r");
   if (!infile){
     printf("Cannot open file: %s\n", argv[1]);
     return 1;
@@ -72,33 +71,34 @@ int main(int argc, char** argv)
   int column = 1;
   int ch;
   
-  while ((ch = fgetc(infile)) != EOF) {
-    char curr = (char) ch;
-    if (curr == '{') {
-      push(curr, line, column, &stack);
-      column++;
-    } else if (curr == '}') {
-      struct node* n = pop(&stack);
-      if (n == NULL) {
-        fprintf(stderr, "Unmatched closing brace at line %d, column %d\n", line, column);
-      } else {
-        printf("Found matching braces: (%d, %d) -> (%d, %d)\n", n->line, n->column, line, column);
-        free(n);
-      }
-      column++;
-    } else if (curr == '\n') {
-      line++;
-      column = 1;
-    } else {
-      column++;
+  while (fgetc(infile) != NULL){
+    char curr = fgetc(infile);
+    if (curr == '{'){
+      push(line,colomn, stack);
     }
+    elif (curr == '}'){
+      pop(struct);
+
+    }
+    elif (curr = '\n'){
+      line ++;
+      colomn = 0; 
+    }
+    else{
+      colomn ++;
+    }
+    
+
   }
-  while(stack != NULL){
-    fprintf(stderr, "Unmatched closing brace at line %d, column %d\n", stack->line, stack->column);
-    struct node* n = pop(&stack);
-    free(n);
-  }
-  fclose(infile);
+
+
+
+
+
+
+  
+
+
 
   return 0;
 }
