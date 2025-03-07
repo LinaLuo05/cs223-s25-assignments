@@ -6,6 +6,7 @@
  ---------------------------------------------*/
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "read_ppm.h"
 
 int main(int argc, char** argv) {
@@ -28,25 +29,32 @@ int main(int argc, char** argv) {
   int max_chars = total_channels / 8;
   printf("Max number of characters in the image: %d\n", max_chars);
   
-  unsigned char *message = malloc(sizeof(unsigned char)* (max_chars + 1));
+  unsigned char *message = malloc(total_channels + 1);
 
   int msg_index = 0;
   int total_pixels = w * h;
   for (int i = 0; i < total_pixels; i++){
-    message[msg_index] = (image[i].red & 0x01)+'0';
+    message[msg_index] = (image[i].red & 0x01);
     msg_index++;
-    message[msg_index] = (image[i].green & 0x01) +'0';
+    message[msg_index] = (image[i].green & 0x01);
     msg_index++;
-    message[msg_index] = (image[i].blue & 0x01)+'0';
+    message[msg_index] = (image[i].blue & 0x01);
     msg_index++;
   }
   message[msg_index] = '\0';
-  printf("%s\n", message);
 
-  for (int i = 0 ; i< 8; i++){
-    
+  for (int i = 0; i < max_chars; i++){
+    unsigned char ch = 0;
+    for (int j = 0; j < 8; j++){
+      ch = (ch << 1) | message[i * 8 + j];
+    }
+    if (ch == '\0')
+      break;
+    printf("%c", ch);
   }
-
+  free(message);
+  free(image);
+  fclose(fp);
   return 0;
 }
 
