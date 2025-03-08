@@ -52,6 +52,7 @@ int main(int argc, char** argv) {
       break;
     printf("%c", ch);
   }
+  printf("\n");
   free(message);
   free(image);
   fclose(fp);
