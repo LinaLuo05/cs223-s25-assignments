@@ -31,6 +31,7 @@ void *findKeyword(void *userdata) {
     FILE *fp = fopen(data->files[i], "r");
     if (!fp){
       fprintf(stderr, "Error: Cannot open file %s\n", data->files[i]);
+      return NULL;
     }
 
     char buffer[1000];
