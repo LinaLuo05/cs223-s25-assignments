@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <pthread.h>
+#include <unistd.h>
 #include <sys/time.h>
+#include <sys/wait.h>
+
 
 #define ANSI_COLOR_RED     "\x1b[31m"
 #define ANSI_COLOR_GREEN   "\x1b[32m"
@@ -12,41 +14,47 @@
 #define ANSI_COLOR_CYAN    "\x1b[36m"
 #define ANSI_COLOR_RESET   "\x1b[0m"
 
-struct threads_data{
-  long thread_ids;
-  int start_index;
-  int end_index;
-  char **files;
-  char* keyword;
-  int localCount; 
-};
+int childProcess(int n, int argc, char **argv) {
+  int localCount = 0; 
+  int i = n;
+  int nprocess = atoi(argv[1]);
+  char *keyword = argv[2]; 
+  int numFiles = argc - 3; 
+  char** fileList = &argv[3];
+  int subsize = numFiles / nprocess;
+  int extra = numFiles % nprocess;
 
-void *findKeyword(void *userdata) {
-  struct threads_data *data = (struct threads_data *)userdata;
-
-  printf("Process [%ld] searching for %d files (%d to %d)\n", data->thread_ids, 
-    data->end_index - data->start_index, data->start_index, data->end_index);
+  int start;
+  int end;
+  start = i*(subsize);
+  if (i == nprocess - 1) {
+    end = (i + 1) * subsize + extra;
+  } else {
+    end = (i + 1) * subsize;
+  }
+  printf("Process [%d] searching for %d files (%d to %d)\n", 
+    getpid(), end - start, start, end);
   
-  for (int i = data->start_index; i < data->end_index; i++) {
-    FILE *fp = fopen(data->files[i], "r");
+  for (int j = start; j < end; j++) {
+    FILE *fp = fopen(fileList[j], "r");
     if (!fp){
-      fprintf(stderr, "Error: Cannot open file %s\n", data->files[i]);
-      return NULL;
+      fprintf(stderr, "Error: Cannot open file %s\n", fileList[j]);
+      return 0;
     }
 
     char buffer[1000];
     while(fgets(buffer, sizeof(buffer), fp)){
-      if (strstr(buffer, data->keyword)){
-        data->localCount++;
-        printf(ANSI_COLOR_MAGENTA "Process [%ld] %s"ANSI_COLOR_BLUE": "ANSI_COLOR_RESET "%s", 
-          data->thread_ids, data->files[i],buffer);
+      if (strstr(buffer, keyword)){
+        localCount++;
+        printf(ANSI_COLOR_MAGENTA "Process [%d] %s" ANSI_COLOR_BLUE ": " ANSI_COLOR_RESET "%s", 
+          getpid(), fileList[j], buffer);
       }
     }
     fclose(fp);
   }
-  printf("Process [%ld] found %d lines containing of keyword: %s\n", data->thread_ids, data->localCount, data->keyword);
-  return NULL; // We don't need our threads to return anything.
-}
+  printf("Process [%d] found %d lines containing of keyword: %s\n", getpid(), localCount, keyword);
+  return localCount;
+} 
 
 int main(int argc, char **argv) {
   if (argc < 4) {
@@ -54,56 +62,36 @@ int main(int argc, char **argv) {
       return 1;
   }
 
-  // Read the number of threads to create from the command line.
-  int nthreads = atoi(argv[1]);
-  char *keyword = argv[2]; 
-  int numFiles = argc - 3; 
-  char **fileList = &argv[3];
-  printf("Searching %d files for keyword: %s\n", numFiles, keyword);
+  // Read the number of process to create from the command line.
+  int nprocess = atoi(argv[1]);
+  printf("Searching %d files for keyword: %s\n", argc - 3, argv[2]);
 
-  int totalOccurrences = 0;
   struct timeval start, end;
-
-  pthread_t *threads;
-  struct threads_data *data;
-
-  threads = malloc(sizeof(pthread_t)*nthreads);
-  data = malloc(sizeof(struct threads_data)*nthreads);
-  
   gettimeofday(&start, NULL);
-  int subsize = numFiles / nthreads;
-  int extra = numFiles % nthreads;
-
-  // Assign each thread an ID and create all the threads.
-  for (int i = 0; i < nthreads; i++) {
-      data[i].thread_ids = i;
-      data[i].start_index = i*(subsize);
-      if(i == nthreads-1){
-        data[i].end_index = (i+1)*(subsize) + extra;
-      }
-      else{
-        data[i].end_index = (i+1)*(subsize);
-      }
-      data[i].files = fileList;
-      data[i].keyword = keyword;
-      data[i].localCount = 0;
-      pthread_create(&threads[i], NULL, findKeyword, &data[i]);
+  //creating n processes
+  for (int i = 0; i < nprocess; i++) {
+    pid_t pid = fork();
+    if (pid == 0) { // Child process
+      int count = childProcess(i, argc, argv);
+      exit(count);
     }
-
-  /* Join all the threads. Main will pause in this loop until all threads
-   * have returned from the thread function. */
-  for (int i = 0; i < nthreads; i++) {
-      pthread_join(threads[i], NULL);
-      totalOccurrences += data[i].localCount;
-
   }
+  // Parent collects results after all children are created
+  int total = 0;
+  int status;
+  pid_t child_pid;
+  
+  // Wait for all children to complete
+  for (int i = 0; i < nprocess; i++) {
+      child_pid = wait(&status);
+      if (WIFEXITED(status)) {
+          total += WEXITSTATUS(status);
+      }
+  }
+
   gettimeofday(&end, NULL);
   double elapsed = (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec) / 1000000.0;
-
-  printf("Total occurrences: %d\n", totalOccurrences);
+  printf("Total occurrences: %d\n", total);
   printf("Elapsed time is %.6f\n", elapsed);
-
-  free(threads);
-  free(data);
   return 0;
 }
