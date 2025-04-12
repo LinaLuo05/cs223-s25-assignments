@@ -3,7 +3,16 @@
 #include <string.h>
 
 void write_ppm(const char* filename, struct ppm_pixel* pixels, int w, int h) {
+    FILE* outfile = fopen(filename, "wb");
+    fprintf(outfile,"P6\n#comments\n%d %d 255 ", w, h);
+    for (int i = 0; i < h; i++) {
+        for (int j = 0; j < w; j++) {
+            fwrite(&pixels[i * w + j], sizeof(struct ppm_pixel), 1, outfile);
+        }
+    }    
+    fclose(outfile);
 }
+
 
 void write_ppm_2d(const char* filename, struct ppm_pixel** pxs, int w, int h) {
 }
