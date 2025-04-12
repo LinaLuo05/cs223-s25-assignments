@@ -47,13 +47,13 @@ int main(int argc, char* argv[]) {
           // Clamp row index
           if (ni < 0) {
             ni = 0;
-          } else if (ni >= h) {  // changed > h to >= h
+          } else if (ni >= h) {
             ni = h - 1;
           }
           // Clamp column index
           if (nj < 0) {
             nj = 0;
-          } else if (nj >= w) {  // changed > w to >= w
+          } else if (nj >= w) {
             nj = w - 1;
           }
           int nidx = ni * w + nj;
