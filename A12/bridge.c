@@ -27,9 +27,18 @@ void *Move(void *args){
   location_t destination = data->start_destination;
 
   for (int i = 0; i < data->num_trips; i++) {
+    //lock bridge
+    pthread_mutex_lock(&bridge.lock);
     
+    //wait for bridge to be free
+    while (bridge.num_on_bridge[(bridge.direction+1)%2] > 0) {
+      pthread_cond_wait(&bridge.free, &bridge.lock);
+    }
+
     //cross bridge
-    bridge.direction = destination;
+    if (bridge.num_on_bridge[OUTLOOK] == 0 && bridge.num_on_bridge[TOWN] == 0) {
+      bridge.direction = destination;
+    }
     printf("Tourist %d takes their %d/%d trip towards %s\n", 
       id, i, data->num_trips, location_string[destination]);
 
@@ -45,10 +54,17 @@ void *Move(void *args){
     assert(bridge.num_on_bridge[destination] >= 0); 
     assert(bridge.num_on_bridge[(bridge.direction+1)%2] == 0); 
 
+    //signal other people the bridge is free
+    pthread_cond_signal(&bridge.free);
+
+    //unlock bridge
+    pthread_mutex_unlock(&bridge.lock);
+
     // spend time at the new location and then change destination
     sleep(rand()/RAND_MAX);
     location_t current = destination;
     destination = (destination + 1) %2;
+    
   }
 
   return NULL;
