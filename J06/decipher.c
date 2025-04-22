@@ -18,8 +18,8 @@ int main(int argc, char** argv)
     char c = fgetc(fp);
     while (c != EOF)
     {
-        c = c>>1;
-        c = c|0b1000000 ;
+        c = (unsigned char)c>>1;
+        c = c&0b01111111 ;
         printf("%c", c);
         c = fgetc(fp);
     }
